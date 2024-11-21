@@ -1,0 +1,18 @@
+{
+  "name": "bfhl-api",
+  "version": "1.0.0",
+  "description": "A REST API to process input and provide filtered results.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["nodejs", "api", "rest"],
+  "author": "chirag",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "express": "^4.21.1",
+    "mime-types": "^2.1.35"
+  }
+}
