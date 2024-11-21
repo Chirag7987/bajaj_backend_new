@@ -4,10 +4,7 @@
   "description": "A REST API to process input and provide filtered results.",
   "main": "index.js",
   "scripts": {
-    "start": "serve -s build",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "node index.js"
   },
   "keywords": [
     "nodejs",
@@ -16,13 +13,12 @@
   ],
   "author": "chirag",
   "license": "ISC",
-  "dependencies": {
-    "body-parser": "^1.20.3",
-    "express": "^4.21.1",
-    "mime-types": "^2.1.35",
-    "serve": "^14.2.4"
-  },
-  "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
-  }
+ "dependencies": {
+  "cors": "^2.8.5",
+  "body-parser": "^1.20.3",
+  "express": "^4.21.1",
+  "mime-types": "^2.1.35"
+}
+
+
 }

@@ -2,27 +2,18 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { isPrime } = require('./utils/prime-check');
 const { processFile } = require('./utils/file-utils');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const cors = require('cors');
-app.use(cors());
 
 // Middleware
+app.use(cors());
 app.use(bodyParser.json({ limit: '5mb' }));
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, "build")));
-
-// Handle all other requests by returning the React app
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
-
 /**
- * 
  * Default Route
- * Provides a welcome message for the API root.
+ * Redirects to /bfhl for ease of use.
  */
 app.get('/', (req, res) => {
     res.redirect('/bfhl');
@@ -44,11 +35,11 @@ app.post('/bfhl', (req, res) => {
     try {
         const { data, file_b64 } = req.body;
 
-        // Validate input: `data` must be an array
+        // Validate input
         if (!data || !Array.isArray(data)) {
             return res.status(400).json({
-                is_success: false,
-                message: 'Invalid input: "data" must be an array.',
+                status: 'error',
+                message: '"data" must be a non-empty array.',
             });
         }
 
@@ -62,7 +53,7 @@ app.post('/bfhl', (req, res) => {
             .sort()
             .slice(-1);
 
-        // Check if any prime number exists in the `numbers` array
+        // Check if any prime number exists
         const isPrimeFound = numbers.some((num) => isPrime(Number(num)));
 
         // Process file data (if provided)
@@ -70,31 +61,30 @@ app.post('/bfhl', (req, res) => {
             ? processFile(file_b64)
             : { file_valid: false, file_mime_type: null, file_size_kb: null };
 
-        // Prepare the response payload
-        const response = {
-            is_success: true,
-            user_id: 'john_doe_17091999',
-            email: 'john@xyz.com',
-            roll_number: 'ABCD123',
-            numbers,
-            alphabets,
-            highest_lowercase_alphabet: highestLowercase,
-            is_prime_found: isPrimeFound,
-            ...fileData,
-        };
-
-        // Send response
-        res.status(200).json(response);
+        // Send success response
+        res.status(200).json({
+            status: 'success',
+            data: {
+                user_id: 'john_doe_17091999',
+                email: 'john@xyz.com',
+                roll_number: 'ABCD123',
+                numbers,
+                alphabets,
+                highest_lowercase_alphabet: highestLowercase,
+                is_prime_found: isPrimeFound,
+                ...fileData,
+            },
+        });
     } catch (error) {
-        // Catch and respond to unexpected errors
+        // Handle unexpected errors
         res.status(500).json({
-            is_success: false,
+            status: 'error',
             message: `Internal server error: ${error.message}`,
         });
     }
 });
 
-// Start the server
+// Start server
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
